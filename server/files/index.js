@@ -1,24 +1,96 @@
 window.onload = function () {
-  const xhr = new XMLHttpRequest();
-  xhr.onload = function () {
-    const bodyElement = document.querySelector("body");
-    if (xhr.status == 200) {
-      const movies = JSON.parse(xhr.responseText);
-      for (const movie of movies) {
-        /* Task 1.3. Add your code from exercise 1 here 
-           and include a non-functional 'Edit' button
-           to pass this test */
-      }
+    const xhr = new XMLHttpRequest();
 
-    } else {
-      bodyElement.append(
-        "Daten konnten nicht geladen werden, Status " +
-          xhr.status +
-          " - " +
-          xhr.statusText
-      );
-    }
-  };
-  xhr.open("GET", "/movies");
-  xhr.send();
+    xhr.onload = function () {
+        const bodyElement = document.querySelector("body");
+
+        if (xhr.status == 200) {
+            const movies = JSON.parse(xhr.responseText);
+
+            const pageTitle = document.createElement("h1");
+            pageTitle.textContent = "My Movies";
+            bodyElement.appendChild(pageTitle);
+
+            for (const movie of movies) {
+                const article = document.createElement("article");
+                article.id = movie.imdbID;
+
+                const title = document.createElement("h2");
+                title.textContent = movie.Title;
+
+                const poster = document.createElement("img");
+                poster.src = movie.Poster;
+                poster.alt = movie.Title + " poster";
+
+                const released = document.createElement("p");
+                released.innerHTML = "<strong>Released:</strong> " + movie.Released;
+
+                const runtime = document.createElement("p");
+                runtime.innerHTML = "<strong>Runtime:</strong> " + movie.Runtime + " min";
+
+                const genres = document.createElement("p");
+                genres.innerHTML = "<strong>Genres:</strong> ";
+                for (const genre of movie.Genres) {
+                    const genreTag = document.createElement("span");
+                    genreTag.className = "genre";
+                    genreTag.textContent = genre;
+                    genres.appendChild(genreTag);
+                }
+
+                const directors = document.createElement("p");
+                directors.innerHTML =
+                    "<strong>Directors:</strong> " + movie.Directors.join(", ");
+
+                const writers = document.createElement("p");
+                writers.innerHTML =
+                    "<strong>Writers:</strong> " + movie.Writers.join(", ");
+
+                const actors = document.createElement("p");
+                actors.innerHTML =
+                    "<strong>Actors:</strong> " + movie.Actors.join(", ");
+
+                const plot = document.createElement("p");
+                plot.innerHTML = "<strong>Plot:</strong> " + movie.Plot;
+
+                const metascore = document.createElement("p");
+                metascore.innerHTML =
+                    "<strong>Metascore:</strong> " + movie.Metascore;
+
+                const imdbRating = document.createElement("p");
+                imdbRating.innerHTML =
+                    "<strong>IMDb Rating:</strong> " + movie.imdbRating;
+
+                const editButton = document.createElement("button");
+                editButton.textContent = "Edit";
+                editButton.onclick = function () {
+                    location.href = "edit.html?imdbID=" + movie.imdbID;
+                };
+
+                article.appendChild(title);
+                article.appendChild(poster);
+                article.appendChild(released);
+                article.appendChild(runtime);
+                article.appendChild(genres);
+                article.appendChild(directors);
+                article.appendChild(writers);
+                article.appendChild(actors);
+                article.appendChild(plot);
+                article.appendChild(metascore);
+                article.appendChild(imdbRating);
+                article.appendChild(editButton);
+
+                bodyElement.appendChild(article);
+            }
+        } else {
+            bodyElement.append(
+                "Daten konnten nicht geladen werden, Status " +
+                xhr.status +
+                " - " +
+                xhr.statusText
+            );
+        }
+    };
+
+    xhr.open("GET", "/movies");
+    xhr.send();
 };
